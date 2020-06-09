@@ -1,0 +1,35 @@
+trigger:
+- develop
+
+resources:
+- repo: self
+
+pool:
+  vmImage: 'ubuntu-18.04'
+
+jobs:
+- job: automated_pipeline
+  displayName: Quality checks + Quality Analysis + Deployment
+  pool: CI Pool
+  steps:
+  - task: Docker@2
+    inputs:
+      containerRegistry: 'managedcare-acr'
+      repository: 'hrxcms'
+      command: 'buildAndPush'
+      Dockerfile: '**/Dockerfile'
+      tags: '$(Build.BuildId)'
+  - task: HelmInstaller@1
+    inputs:
+      helmVersionToInstall: '3.1.1'
+  - task: HelmDeploy@0
+    inputs:
+      connectionType: 'Kubernetes Service Connection'
+      kubernetesServiceConnection: 'bfhl-dev-aks'
+      command: 'upgrade'
+      chartType: 'FilePath'
+      chartPath: './deployment/helm-chart'
+      releaseName: 'hrx-cms'
+      overrideValues: 'version=$(Build.BuildId)'
+      valueFile: './deployment/helm-chart/values.yaml'
+

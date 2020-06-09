@@ -1,0 +1,24 @@
+replicaCount: 1
+port: 5000
+
+serviceName: hrxcms
+
+label: hrxcms
+
+TargetPort: 5000
+
+containerName: hrxcms
+
+containerPort: 5000
+
+name: hrxcms
+
+podName: hrxcms
+
+service:
+  type: ClusterIP
+  port: 80
+
+containerRegistry: bfhlcontainerregistry.azurecr.io
+
+imageName: hrxcms

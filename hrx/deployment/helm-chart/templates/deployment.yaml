@@ -1,0 +1,26 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: "{{ .Values.name }}"
+  namespace: hrxcms
+spec: 
+  selector:
+    matchLabels:
+      app: "{{ .Values.label }}"
+  replicas: {{ .Values.replicaCount }}
+  template: 
+    metadata:
+      name: "{{ .Values.podname }}"
+      namespace: hrxcms
+      labels:
+        app: "{{ .Values.label }}"
+    spec:
+      containers:
+      - name: "{{ .Values.containerName }}"
+        image: "{{ .Values.containerRegistry }}/{{ .Values.imageName }}:{{ .Values.version }}"
+        imagePullPolicy: Always
+        ports:
+          - containerPort: {{ .Values.containerPort }}
+        env:
+          - name: NODE_ENV
+            value: development
